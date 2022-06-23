@@ -1,0 +1,19 @@
+{
+    "name": "AlephVault.Unity.EVMGames.Auth.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c7004f7d2caeb7f488e163a6b45f66cb",
+        "GUID:aa7fb4e1c71ef8c45b640fda65eb777b",
+        "GUID:8082b538e2f162ab3963c0840852f40e",
+        "GUID:f3e508bb81e3448249582d03b9396c93"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
