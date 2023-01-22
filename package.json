@@ -1,11 +1,11 @@
 {
   "name": "com.alephvault.unity.evmgames.auth",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "displayName": "Aleph Vault - Unity - EVMGames.Auth",
   "description": "A login protocol implementation which makes use of EVM blockchains via WalletConnect compatible mobile wallet apps.",
   "unity": "2020.3",
   "dependencies": {
-    "com.alephvault.unity.meetgard.auth": "0.0.2",
+    "com.alephvault.unity.meetgard.auth": "0.0.3",
     "com.alephvault.unity.evmgames": "0.0.1"
   },
   "author": {

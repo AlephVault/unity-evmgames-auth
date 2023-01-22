@@ -72,7 +72,7 @@ namespace AlephVault.Unity.EVMGames.Auth
             {
                 walletConnect = GetComponent<WalletConnect>();
                 base.Awake();
-                OnWelcome += EVMAuthProtocolClientSide_OnWelcome;
+                Handshake.OnWelcome += EVMAuthProtocolClientSide_OnWelcome;
                 OnLoggedOut += EVMAuthProtocolClientSide_OnLoggedOut;
             }
 
@@ -95,7 +95,7 @@ namespace AlephVault.Unity.EVMGames.Auth
 
             protected void OnDestroy()
             {
-                OnWelcome -= EVMAuthProtocolClientSide_OnWelcome;
+                Handshake.OnWelcome -= EVMAuthProtocolClientSide_OnWelcome;
                 OnLoggedOut -= EVMAuthProtocolClientSide_OnLoggedOut;
             }
         }
