@@ -157,7 +157,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfe6a08707a943e99d1201ea3a6b30bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handshakeTimeout: 5
   timestampTolerance: 120
   accounts:
   - preview:
@@ -251,6 +250,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 290.87332, y: 327.15765, z: -108.80201}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -345,6 +345,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1447775660}
   - {fileID: 1995880086}
@@ -386,6 +387,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -418,6 +420,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -450,6 +453,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1995880086}
   m_RootOrder: 0
@@ -512,8 +516,6 @@ GameObject:
   - component: {fileID: 1135617226}
   - component: {fileID: 1135617234}
   - component: {fileID: 1135617233}
-  - component: {fileID: 1135617232}
-  - component: {fileID: 1135617231}
   - component: {fileID: 1135617230}
   - component: {fileID: 1135617229}
   - component: {fileID: 1135617228}
@@ -535,6 +537,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 290.87332, y: 327.15765, z: -108.80201}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -551,7 +554,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e6832722b0142e993e510b65842958c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  managesWalletConnectSession: 1
 --- !u!114 &1135617228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -593,63 +595,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db69ef4e192646a0b041a069131832b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  managesClientConnection: 1
-  EVMGatewayURL: http://localhost:8545
   Host: localhost
   Port: 9999
---- !u!114 &1135617231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1135617225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 801bffbf4c62cc244b55ea230d19649d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AllowedWalletIds: []
-  DefaultWallet: 0
-  autoSaveAndResume: 1
-  connectOnAwake: 0
-  connectOnStart: 1
-  connectSessionRetryCount: 3
-  customBridgeUrl: 
-  chainId: 1
-  ConnectedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  ConnectedEventSession:
-    m_PersistentCalls:
-      m_Calls: []
-  DisconnectedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  NewSessionConnected:
-    m_PersistentCalls:
-      m_Calls: []
-  ResumedSessionConnected:
-    m_PersistentCalls:
-      m_Calls: []
-  AppData:
-    Description: Descripcion Sarasa
-    URL: http://sarasa.app
-    Icons:
-    - http://sarasa.app/wc.ico
-    Name: Sarasa
---- !u!114 &1135617232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1135617225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17303ab972a16184e8ba0066d294c7ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1135617233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -711,6 +658,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 217827791}
   m_RootOrder: 0
@@ -732,7 +680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a76715672e638354bb16f1a0cf190f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walletConnect: {fileID: 1135617231}
+  walletConnect: {fileID: 0}
 --- !u!114 &1447775662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -801,6 +749,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1079065760}
   m_Father: {fileID: 217827791}
@@ -984,6 +933,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
