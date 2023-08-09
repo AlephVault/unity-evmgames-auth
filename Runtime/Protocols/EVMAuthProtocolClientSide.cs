@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using AlephVault.Unity.EVMGames.Auth.Types;
-using AlephVault.Unity.EVMGames.WalletConnectSharp.Unity;
 using AlephVault.Unity.Meetgard.Auth.Protocols.Simple;
 using AlephVault.Unity.Meetgard.Auth.Types;
 using AlephVault.Unity.Meetgard.Types;
-using UnityEngine;
+using AlephVault.Unity.Support.Utils;
+using Exception = System.Exception;
 
 namespace AlephVault.Unity.EVMGames.Auth
 {
@@ -28,19 +28,6 @@ namespace AlephVault.Unity.EVMGames.Auth
             where LoginFailed : IEVMLoginFailed<LoginFailed>, new()
             where Kicked : IKickMessage<Kicked>, new()
         {
-            // A linked WalletConnect instance, if any.
-            private WalletConnect walletConnect;
-            
-            /// <summary>
-            ///   Tells whether, when also having the
-            ///   <see cref="WalletConnect"/> behaviour
-            ///   attached, its session will be closed
-            ///   when the logged session is also logged
-            ///   out (via a LoggedOut event).
-            /// </summary>
-            [SerializeField]
-            private bool managesWalletConnectSession = true;
-
             /// <summary>
             ///   The signature to use as login data. This
             ///   signature is not empty, and related to
@@ -70,20 +57,15 @@ namespace AlephVault.Unity.EVMGames.Auth
 
             protected new void Awake()
             {
-                walletConnect = GetComponent<WalletConnect>();
                 base.Awake();
                 Handshake.OnWelcome += EVMAuthProtocolClientSide_OnWelcome;
-                OnLoggedOut += EVMAuthProtocolClientSide_OnLoggedOut;
             }
 
-            private async Task EVMAuthProtocolClientSide_OnLoggedOut()
+            protected void OnDestroy()
             {
-                if (managesWalletConnectSession)
-                {
-                    walletConnect.CloseSession(false);
-                }
+                Handshake.OnWelcome -= EVMAuthProtocolClientSide_OnWelcome;
             }
-
+            
             private async Task EVMAuthProtocolClientSide_OnWelcome()
             {
                 await SendEVMLogin(new EVMLoginMessage()
@@ -92,11 +74,19 @@ namespace AlephVault.Unity.EVMGames.Auth
                     Timestamp = Timestamp
                 });
             }
+            
+            /// <summary>
+            ///   Events that can attend disconnection of this EVM protocol.
+            /// </summary>
+            public event Func<Exception, Task> OnEVMClientDisconnected = null;
 
-            protected void OnDestroy()
+            /// <summary>
+            ///   Forwards this to its own event.
+            /// </summary>
+            /// <param name="reason">The disconnection reason</param>
+            public override Task OnDisconnected(Exception reason)
             {
-                Handshake.OnWelcome -= EVMAuthProtocolClientSide_OnWelcome;
-                OnLoggedOut -= EVMAuthProtocolClientSide_OnLoggedOut;
+                return OnEVMClientDisconnected?.InvokeAsync(reason);
             }
         }
     }

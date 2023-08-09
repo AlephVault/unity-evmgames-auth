@@ -1,4 +1,7 @@
+using System;
 using System.Threading.Tasks;
+using AlephVault.Unity.Meetgard.Types;
+using Exception = System.Exception;
 
 namespace AlephVault.Unity.EVMGames.Auth
 {
@@ -34,6 +37,11 @@ namespace AlephVault.Unity.EVMGames.Auth
             ///   Sends a logout message and immediately closes.
             /// </summary>
             public Task Logout();
+
+            /// <summary>
+            ///   Events that can attend disconnection of this EVM protocol.
+            /// </summary>
+            public event Func<Exception, Task> OnEVMClientDisconnected;
         }
     }
 }

@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 using AlephVault.Unity.EVMGames.Auth.Protocols;
 using AlephVault.Unity.EVMGames.Auth.Types;
 using AlephVault.Unity.EVMGames.Nethereum.Web3;
-using AlephVault.Unity.EVMGames.WalletConnectSharp.NEthereum;
-using AlephVault.Unity.EVMGames.WalletConnectSharp.Unity;
 using AlephVault.Unity.Meetgard.Authoring.Behaviours.Client;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace AlephVault.Unity.EVMGames.Auth
@@ -16,40 +15,18 @@ namespace AlephVault.Unity.EVMGames.Auth
         {
             /// <summary>
             ///   An EVM client is a complete interface with the
-            ///   user (save for the required QR Image, which comes
-            ///   apart) tied to a <see cref="walletConnect"/>
-            ///   instance which will guide the whole lifecycle of
-            ///   a Wallet Connect session and the game itself.
+            ///   user (save for any external provider, e.g. like
+            ///   WalletConnect) both hitting an EVM network and
+            ///   an authenticated game server.
             /// </summary>
             [RequireComponent(typeof(NetworkClient))]
-            [RequireComponent(typeof(WalletConnect))]
             public class EVMClient : MonoBehaviour
             {
-                // The instance for this client.
-                private WalletConnect walletConnect;
-
                 // The related network client.
                 private NetworkClient networkClient;
 
-                /// <summary>
-                ///   Tells whether the client connection (and
-                ///   thus the login protocol) is automatically
-                ///   managed by the session lifecycle (i.e.
-                ///   auto-login on session connect, auto-close
-                ///   on session disconnect).
-                /// </summary>
-                [SerializeField]
-                private bool managesClientConnection = true;
-
-                /// <summary>
-                ///   This URL will be paid attention to when
-                ///   successfully completing a new session
-                ///   handshake: it will be used to create a
-                ///   new Web3 client (using the instance's
-                ///   current session as provider). It will
-                ///   be an error to provide an empty URL.
-                /// </summary>
-                public string EVMGatewayURL;
+                // The related auth protocol.
+                private IEVMAuthProtocolClientSide authProtocol;
 
                 /// <summary>
                 ///   The host to connect to (i.e. the game or
@@ -68,74 +45,62 @@ namespace AlephVault.Unity.EVMGames.Auth
                 ///   the EVM network.
                 /// </summary>
                 public Web3 CurrentWeb3Client { get; private set; }
+                
+                /// <summary>
+                ///   The current Web3 (valid) address to interact
+                ///   with the EVM network.
+                /// </summary>
+                public string CurrentWeb3Address { get; private set; }
 
                 private void Awake()
                 {
-                    walletConnect = GetComponent<WalletConnect>();
                     networkClient = GetComponent<NetworkClient>();
-                }
+                    authProtocol = GetComponent<IEVMAuthProtocolClientSide>();
+                    if (authProtocol == null)
+                    {
+                        throw new Exception("No EVM auth protocol client side is attached to this object");
+                    }
 
-                private void Start()
-                {
-                    walletConnect.DisconnectedEvent.AddListener(DisconnectedEvent);
-                    walletConnect.ConnectedEvent.AddListener(ConnectedEvent);
+                    authProtocol.OnEVMClientDisconnected += OnEVMClientDisconnected;
                 }
 
                 private void OnDestroy()
                 {
-                    walletConnect.DisconnectedEvent.RemoveListener(DisconnectedEvent);
-                    walletConnect.ConnectedEvent.RemoveListener(ConnectedEvent);
+                    authProtocol.OnEVMClientDisconnected -= OnEVMClientDisconnected;
                 }
 
-                private async void DisconnectedEvent(WalletConnectUnitySession session)
+                // Clears the current EVM settings on this client.
+                private async Task OnEVMClientDisconnected(Exception e)
                 {
-                    // 1. Clear the current web3 client.
                     CurrentWeb3Client = null;
-                    
-                    // 2. Close the current connection, if
-                    //    told to.
-                    if (managesClientConnection && networkClient.IsRunning)
-                    {
-                        await networkClient.GetComponent<IEVMAuthProtocolClientSide>().Logout();
-                    }
+                    CurrentWeb3Address = "";
                 }
                 
-                private async void ConnectedEvent()
-                {
-                    // 1. Creates a new Web3 client.
-                    CurrentWeb3Client = new Web3(walletConnect.Session.CreateProvider(
-                        new Uri(EVMGatewayURL)
-                    ));
-                    
-                    // 2. Attempts a login, if it is told to
-                    //    automatically connect the network
-                    //    client and do EVM login.
-                    // 3. Close the current connection, if
-                    //    told to.
-                    if (managesClientConnection && !networkClient.IsRunning)
-                    {
-                        await WalletLogin();
-                    }
-                }
-
                 /// <summary>
                 ///   Performs a complete life-cycle of a login,
-                ///   including the signature with Wallet Connect.
-                ///   This method must be called accordingly if
-                ///   the login failed a former time (and a custom
-                ///   implementation of the EVM Auth Protocol Client
-                ///   Side does not disconnect the WalletConnect
-                ///   session on itself), or if there is no automatic
-                ///   login management checked on in this component.
+                ///   including the signature with Web3 (using a
+                ///   client that can sign!).
                 /// </summary>
-                public async Task WalletLogin()
+                /// <param name="web3">The Web3 client to use. Must have sign capabilities</param>
+                /// <param name="address">The address to use (both as account and signing)</param>
+                public async Task WalletLogin(Web3 web3, string address)
                 {
-                    // It is an error to try this when there is no
-                    // current web3 client / there is no session.
-                    if (CurrentWeb3Client == null)
+                    if (web3 == null)
                     {
-                        throw new InvalidOperationException("Cannot do a Wallet Login cycle when no " +
-                                                            "WalletConnect session is established");
+                        throw new ArgumentException(nameof(web3));
+                    }
+
+                    if (string.IsNullOrEmpty(address))
+                    {
+                        throw new ArgumentException(nameof(address));
+                    }
+                    
+                    // It is an error to try this when there is an already
+                    // used web3 client on this client.
+                    if (CurrentWeb3Client != null)
+                    {
+                        throw new InvalidOperationException("Cannot do a Wallet Login cycle when a " +
+                                                            "Web3 client is attached to it");
                     }
 
                     // It is an error to try this unless there is
@@ -143,9 +108,9 @@ namespace AlephVault.Unity.EVMGames.Auth
                     // not already connected.
                     if (networkClient.IsRunning)
                     {
-                        throw new InvalidOperationException("Cannot do a Wallet Login when there is " +
-                                                            "an already established collectiono configured network client, or there is one " +
-                                                            "but is already running");
+                        throw new InvalidOperationException("Cannot do a Web3 Login when there is an already " +
+                                                            "established collection configured network client, or " +
+                                                            "there is one but is already running");
                     }
 
                     // The first thing is to generate the challenge,
@@ -157,20 +122,22 @@ namespace AlephVault.Unity.EVMGames.Auth
                     // The next thing is to obtain a signature. An IO
                     // Error should be captured, since it means that
                     // the signature process failed or was rejected.
-                    string signature = await walletConnect.Session.EthSign(
-                        walletConnect.Session.Accounts[0], challenge
-                    );
-                    
+                    string signature = await web3.Eth.Sign.SendRequestAsync(address, challenge);
+
                     // Now, both things are taken and the login is attempted.
-                    IEVMAuthProtocolClientSide protocol = networkClient.GetComponent<IEVMAuthProtocolClientSide>();
-                    if (protocol == default)
-                    {
-                        throw new InvalidOperationException("Cannot do a Wallet Login when there is " +
-                                                            "no EVM login behaviour in the current client");
-                    }
-                    protocol.Signature = signature;
-                    protocol.Timestamp = timestamp;
+                    authProtocol.Signature = signature;
+                    authProtocol.Timestamp = timestamp;
                     networkClient.Connect(Host, Port);
+                    CurrentWeb3Address = address;
+                    CurrentWeb3Client = web3;
+                }
+
+                /// <summary>
+                ///   Forces an EVM logout.
+                /// </summary>
+                public Task Logout()
+                {
+                    return authProtocol.Logout();
                 }
             }
         }

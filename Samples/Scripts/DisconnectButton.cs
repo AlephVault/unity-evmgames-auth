@@ -1,4 +1,5 @@
-using AlephVault.Unity.EVMGames.WalletConnectSharp.Unity;
+using AlephVault.Unity.EVMGames.Auth.Protocols;
+using AlephVault.Unity.Meetgard.Authoring.Behaviours.Client;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,9 @@ namespace AlephVault.Unity.EVMGames.Auth
         public class DisconnectButton : MonoBehaviour
         {
             private Button button;
+
+            [SerializeField]
+            private NetworkClient client;
             
             private void Awake()
             {
@@ -28,7 +32,7 @@ namespace AlephVault.Unity.EVMGames.Auth
 
             private void DisconnectButton_Click()
             {
-                WalletConnect.Instance.CloseSession();
+                client.GetComponent<IEVMAuthProtocolClientSide>().Logout();
             }
         }
     }
