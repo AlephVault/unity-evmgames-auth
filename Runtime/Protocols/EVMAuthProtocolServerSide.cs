@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Nethereum.Signer;
 using AlephVault.Unity.EVMGames.Auth.Types;
-using AlephVault.Unity.EVMGames.Nethereum.Signer;
 using AlephVault.Unity.Meetgard.Auth.Protocols.Simple;
 using AlephVault.Unity.Meetgard.Auth.Types;
 using AlephVault.Unity.Meetgard.Types;

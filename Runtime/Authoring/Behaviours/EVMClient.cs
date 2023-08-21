@@ -2,9 +2,8 @@ using System;
 using System.Threading.Tasks;
 using AlephVault.Unity.EVMGames.Auth.Protocols;
 using AlephVault.Unity.EVMGames.Auth.Types;
-using AlephVault.Unity.EVMGames.Nethereum.Web3;
+using Nethereum.Web3;
 using AlephVault.Unity.Meetgard.Authoring.Behaviours.Client;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace AlephVault.Unity.EVMGames.Auth
