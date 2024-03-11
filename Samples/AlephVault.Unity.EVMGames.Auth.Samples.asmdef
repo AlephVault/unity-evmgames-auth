@@ -2,12 +2,11 @@
     "name": "AlephVault.Unity.EVMGames.Auth.Samples",
     "rootNamespace": "",
     "references": [
-        "GUID:f3e508bb81e3448249582d03b9396c93",
         "GUID:aa7fb4e1c71ef8c45b640fda65eb777b",
         "GUID:8082b538e2f162ab3963c0840852f40e",
         "GUID:508e5bd3ca7ebd310953dcb3c7b79679",
-        "GUID:d0a9aa2204d4b0594b288716133915de",
-        "GUID:c7004f7d2caeb7f488e163a6b45f66cb"
+        "GUID:c7004f7d2caeb7f488e163a6b45f66cb",
+        "GUID:d0a9aa2204d4b0594b288716133915de"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

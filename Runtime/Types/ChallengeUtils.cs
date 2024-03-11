@@ -1,6 +1,4 @@
 using System;
-using AlephVault.Unity.Binary;
-using UnityEngine;
 
 namespace AlephVault.Unity.EVMGames.Auth
 {
